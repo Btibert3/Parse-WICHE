@@ -56,7 +56,7 @@ for (state in states) {
 
 ## save the data
 write_csv(wiche, "~/Downloads/wiche-hs-grads.csv", na="")
-
+saveRDS(wiche, "wiche-april-2019.rds")
 
 ## lets look at the total over time
 # grad_tot = ddply(wiche, .(year), summarise, 
