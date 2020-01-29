@@ -9,6 +9,8 @@
 ## All rights reserved.
 ###############################################################################
 
+options(stringsAsFactors = FALSE)
+
 ## load the packages
 library(tidyverse)
 library(readxl)
@@ -44,7 +46,7 @@ data_years = 2000:2031
 report_values = c(rep("actual", 11), rep("projected", 21))
 
 for (state in states) {
- raw_w = read_excel("raw/wiche.xlsx", sheet=state, range="C7:J38", col_names = CNAMES)
+ raw_w = read_excel("raw/wiche2.xlsx", sheet=state, range="C7:J38", col_names = CNAMES)
  raw_w = transform(raw_w, 
                    year = data_years,
                    status = report_values,
@@ -54,9 +56,20 @@ for (state in states) {
  cat("finished ", state, "\n")
 }
 
+
+## DC
+raw_w = read_excel("raw/wiche2.xlsx", sheet='District of Columbia', range="C7:J38", col_names = CNAMES)
+raw_w = transform(raw_w, 
+                  year = data_years,
+                  status = report_values,
+                  state = 'District of Columbia')
+raw_long = raw_w %>% gather("demo", "grads", -year, -status, -state)
+raw_long$grads = as.numeric(raw_long$grads)
+wiche = bind_rows(wiche, raw_long)
+
 ## save the data
 write_csv(wiche, "~/Downloads/wiche-hs-grads.csv", na="")
-saveRDS(wiche, "wiche-april-2019.rds")
+saveRDS(wiche, "wiche-jan-2020.rds")
 
 ## lets look at the total over time
 # grad_tot = ddply(wiche, .(year), summarise, 
